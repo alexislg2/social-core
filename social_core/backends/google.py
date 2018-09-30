@@ -52,13 +52,18 @@ class BaseGoogleAuth(object):
 class BaseGoogleOAuth2API(BaseGoogleAuth):
     def user_data(self, access_token, *args, **kwargs):
         """Return user data from Google API"""
+        key_secret = self.get_key_and_secret()
+        params = {
+            'access_token': access_token,
+            'alt': 'json'
+        }
+        if key_secret[0]:
+            params["key"] = key_secret[0]
         return self.get_json(
             'https://www.googleapis.com/plus/v1/people/me',
-            params={
-                'access_token': access_token,
-                'alt': 'json'
-            }
+            params=params
         )
+
 
     def revoke_token_params(self, token, uid):
         return {'token': token}
